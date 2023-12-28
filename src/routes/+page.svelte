@@ -1,2 +1,25 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+    import Griglia from "../lib/components/griglia.svelte";
+</script>
+
+<div>
+    <Griglia/>
+</div>
+
+<style>
+    :global(:root){
+        --bg-color: grey;
+        --cs-color: lightgrey;
+        --n2-color: white;
+        --n4-color: beige;
+        --n8-color: yellow;
+        --n16-color: orange;
+        --n32-color: red;
+        --n64-color: violet;
+        --n128-color: purple;
+        --n256-color: lightblue;
+        --n512-color: blue;
+        --n1024-color: lightgreen;
+        --n2048-color: green;
+        }
+</style>

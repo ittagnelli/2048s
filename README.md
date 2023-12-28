@@ -1,38 +1,14 @@
-# create-svelte
+# 2048s
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+Implementing 2048 game is Svelte together with students to have some fun together during Xmas holidays
 
-## Creating a project
+## Team
 
-If you're seeing this, you've probably already done this step. Congrats!
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+|                                                                               | dev                                                         | role                                                       |
+| ----------------------------------------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------- |
+| <img src="https://avatars.githubusercontent.com/u/111191978?v=4" width="150"> | [**profmancusoa**](https://github.com/profmancusoa)         | Overlook development                                       |
+| <img src="https://avatars.githubusercontent.com/u/99402338?v=4" width="150">  | [**Marco Cellini**](https://github.com/MarcoCellini)        | Student of 5th year developing core game component         |
+| <img src="https://avatars.githubusercontent.com/u/78368908?v=4" width="150">  | [**Matteo Putignano**](https://github.com/Matteo-Putignano) | Student of 5th year developing core game component         |
+| <img src="https://avatars.githubusercontent.com/u/99402068?v=4" width="150">  | [**Marco Minetti**](https://github.com/Marco-Minetti)       | Student of 5th year developing graphics and scoring system |
+| <img src="https://avatars.githubusercontent.com/u/99403313?v=4" width="150">  | [**Gioele Mari**](https://github.com/Gioele-Mari)           | Student of 5th year testing the game                       |

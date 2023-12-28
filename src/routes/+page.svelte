@@ -1,2 +1,13 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+	import Input from '../lib/components/input.svelte';
+
+	let dir = 'NEUTRAL';
+	function handle_move(e) {
+		console.log(e.detail);
+		dir = e.detail;
+	}
+</script>
+
+<Input on:move={handle_move} />
+
+{dir}

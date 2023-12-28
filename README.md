@@ -4,7 +4,6 @@ Implementing 2048 game is Svelte together with students to have some fun togethe
 
 ## Team
 
-
 |                                                                               | dev                                                         | role                                                       |
 | ----------------------------------------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------- |
 | <img src="https://avatars.githubusercontent.com/u/111191978?v=4" width="150"> | [**profmancusoa**](https://github.com/profmancusoa)         | Overlook development                                       |

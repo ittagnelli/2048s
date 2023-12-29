@@ -1,39 +1,39 @@
 <script> 
 
     import Griglia from "../components/griglia.svelte";
+    import Score from "../components/score.svelte";
+    import Restart from "../components/restart.svelte";
 
-    let score = 0;
+    import {score} from "../js/store";
+
+    
     let record = 0;
 
     $: {
-        if(score > record) {
-            record = score;
+        if($score > record) {
+            record = $score;
         }
     }
 
-    function restart() {
-        score = 0;
-    }
 </script>
 
 <div class="container">
     <div class="sub-container">
         <div class="name">2048</div> 
-        <div class="point">RECORD <div style="display: block; color: white; font-size: 3vh;">{record}</div></div>
+        <Score name="RECORD"/>
     </div>
 
     <hr>
 
     <div class="sub-container">
         <div style="margin-top: 4vh;">Join the numbers and get to the <b>2048 tile!</b></div>
-        <div class="point adj">SCORE <div style="display: block; color: white; font-size: 3vh;">{score}</div></div>
+        <Score name="SCORE" adj=1/>
     </div>
-
     <div class="table">
         <Griglia/>
     </div>
 
-    <div class="New_Game" on:click={restart}>New Game</div>
+    <Restart/>
 </div>
 
 <style>
@@ -68,23 +68,6 @@
         border: 1px solid red;
     }
 
-    .point  {
-        padding-top: 1vh;
-        padding-bottom: 1vh;
-        width: 10vw;
-        height: min-content;
-        background-color: peru;
-        border-radius: 1vh;
-        margin: 0 auto;
-        margin-top: 2.5vh;
-        font-size: larger;
-        font-weight: 400;
-    }
-
-    .adj {
-        margin-top: 1.5vh;
-    }
-
     .name {
         font-size: 10vh;
         font-weight: bolder;
@@ -94,19 +77,6 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         border: 1px solid red;
-    }
-
-    .New_Game {
-        padding-top: 1vh;
-        padding-bottom: 1vh;
-        width: 10vw;
-        height: min-content;
-        background-color: peru;
-        border-radius: 1vh;
-        margin: 0 auto;
-        margin-top: 2.5vh;
-        font-size: larger;
-        font-weight: 400;
     }
 
     .table {

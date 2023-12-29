@@ -1,4 +1,4 @@
-import { readable } from 'svelte/store';
+import { readable, writable } from 'svelte/store';
 import { UAParser } from 'ua-parser-js';
 
 // export const is_mobile = readable(false);
@@ -10,3 +10,6 @@ export const is_mobile = readable(false, (set) => {
 
 	set(is_mobile != 'desktop');
 });
+
+//game status
+export const is_game_over = writable(true);

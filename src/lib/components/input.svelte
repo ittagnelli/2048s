@@ -1,6 +1,7 @@
 <script>
 	import { is_mobile } from '../../js/store';
 	import { createEventDispatcher } from 'svelte';
+    import { is_game_over } from '../../js/store';
 
 	const THRESHOLD = 15; //define swipe sensitivity
 	const dispatch = createEventDispatcher();
@@ -34,7 +35,7 @@
 	};
 
 	function key_pressed(k) {
-		if (!$is_mobile) {
+		if (!$is_mobile && !$is_game_over) {
 			//if on desktop dispatch arrow key press as swipe
 			if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(k.key))
 				dispatch('move', k.key.substring(5).toUpperCase());
@@ -62,7 +63,7 @@
 		//if valid direction trigger notify caller
 		swipe.start = false;
 		let direction = swipe.get_swipe();
-		if (direction != 'INVALID') dispatch('move', direction);
+		if (direction != 'INVALID' && !is_game_over) dispatch('move', direction);
 	}
 </script>
 

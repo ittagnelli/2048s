@@ -1,6 +1,6 @@
 <script> 
 
-    import Griglia from "..//components/griglia.svelte";
+    import Griglia from "../components/griglia.svelte";
 
     let score = 0;
     let record = 0;

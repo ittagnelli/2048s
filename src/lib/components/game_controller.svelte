@@ -1,0 +1,112 @@
+<script>
+	import { score, best_score, is_game_over } from '../js/store';
+
+	//update best score if needed
+	$: if ($score > $best_score) $best_score = $score;
+
+	function new_game() {
+		$score = 0;
+		$is_game_over = false;
+	}
+</script>
+
+<div class="controller">
+	<div class="title text">2048</div>
+	<div class="cell-score score text">
+		<span class="cell-score-title">SCORE</span>
+		<span class="cell-score-value">{$score}</span>
+	</div>
+	<div class="cell-score best text">
+		<span class="cell-score-title">BEST</span>
+		<span class="cell-score-value">{$best_score}</span>
+	</div>
+	<div class="subtitle text">Join the numbers and get to the <b>2048 tile!</b></div>
+	<button class="new text" on:click={new_game}>New Game</button>
+</div>
+
+<style>
+	.controller {
+		display: grid;
+		grid-template-columns: repeat(6, minmax(0, 1fr));
+		row-gap: 15px;
+		column-gap: 10px;
+		align-items: center;
+	}
+
+	.cell-score {
+		display: flex;
+		flex-direction: column;
+		border-radius: 3px;
+		background-color: var(--cell-bg);
+		width: 100%;
+		aspect-ratio: 1;
+		font-weight: bold;
+	}
+
+	.score {
+		grid-column: 5/6;
+	}
+
+	.best {
+		grid-column: 6/7;
+	}
+
+	.cell-score-title {
+		color: #eee4da;
+		font-size: 14px;
+		margin-top: 10px;
+	}
+
+	.cell-score-value {
+		color: var(--button-fg) !important;
+		padding-top: 10px;
+		font-size: 18px;
+	}
+
+	.text {
+		color: var(--main-text-color);
+		font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+	}
+
+	.title {
+		grid-column: 1/4;
+		font-size: 60px;
+		font-weight: bold;
+	}
+
+	.subtitle {
+		grid-column: 1/5;
+	}
+
+	.new {
+		all: unset;
+		grid-column: 5/7;
+		background-color: var(--button-bg);
+		color: var(--button-fg);
+		height: 40px;
+		line-height: 40px;
+		font-size: 18px;
+		font-weight: bold;
+		border-radius: 3px;
+		cursor: pointer;
+	}
+
+	@media only screen and (max-width: 600px) {
+		.cell-score-title {
+			font-size: 12px;
+			margin-top: 5px;
+		}
+
+		.cell-score-value {
+			color: var(--button-fg) !important;
+			margin-bottom: 10px;
+			font-size: 12px;
+		}
+
+		.new {
+			height: 40px;
+			line-height: 40px;
+			font-size: 16px;
+		}
+	}
+</style>

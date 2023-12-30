@@ -1,43 +1,25 @@
 <script>
-	import Input from '../lib/components/input.svelte';
-	import Griglia from '../components/griglia.svelte';
-	import Restart from '../components/restart.svelte';
-	import Title from '../components/title.svelte';
-	import { score } from '../js/store';
-
-	let dir = 'NEUTRAL';
-	let record = 0;
-
-	$: {
-		if ($score > record) {
-			record = $score;
-		}
-	}
-
-	function handle_move(e) {
-		console.log(e.detail);
-		dir = e.detail;
-	}
+	import GameController from '../lib/components/game_controller.svelte';
+	import GameBoard from '../lib/components/game_board.svelte';
 </script>
 
-<Input on:move={handle_move} />
-
-{dir}
-
-<div class="container">
-	<Title />
-
-	<div class="table">
-		<Griglia />
+<div class="game-container">
+	<div class="game-controller">
+		<GameController />
 	</div>
-
-	<Restart />
+	<div class="game-board">
+		<GameBoard />
+	</div>
 </div>
 
 <style>
 	:global(:root) {
-		--bg-color: peru;
-		--cs-color: lightgrey;
+		--bg-color: #fafaef;
+		--cell-color: rgba(238, 228, 218, 0.35);
+		--main-text-color: #776e65;
+		--button-bg: #8f7a66;
+		--button-fg: #f9f6f2;
+		--cell-bg: #bbada0;
 		--n2-color: white;
 		--n4-color: beige;
 		--n8-color: yellow;
@@ -51,15 +33,15 @@
 		--n2048-color: green;
 	}
 
-	.container {
-		width: 50%;
+	:global(body) {
+		background-color: var(--bg-color);
+	}
+
+	.game-container {
+		width: min(95%, 500px);
 		margin: 0 auto;
 		text-align: center;
 		height: min-content;
-		border: 1px solid red;
-	}
-
-	.table {
-		margin-top: 5vh;
+		margin-top: 20px;
 	}
 </style>

@@ -1,7 +1,6 @@
 <script>
-	import { is_mobile } from '../../js/store';
+	import { is_mobile, is_game_over } from '../js/store';
 	import { createEventDispatcher } from 'svelte';
-    import { is_game_over } from '../../js/store';
 
 	const THRESHOLD = 15; //define swipe sensitivity
 	const dispatch = createEventDispatcher();
@@ -44,26 +43,32 @@
 
 	function touch_start(e) {
 		//start tracking the swipe action
-		swipe.start = true;
-		swipe.x_start = e.touches[0].screenX;
-		swipe.y_start = e.touches[0].screenY;
+		if ($is_mobile && !$is_game_over) {
+			swipe.start = true;
+			swipe.x_start = e.touches[0].screenX;
+			swipe.y_start = e.touches[0].screenY;
+		}
 	}
 
 	function touch_move(e) {
 		//swipe action in progress
 		//we do care just about last point
-		if (swipe.start) {
-			swipe.x_end = e.touches[0].screenX;
-			swipe.y_end = e.touches[0].screenY;
+		if ($is_mobile && !$is_game_over) {
+			if (swipe.start) {
+				swipe.x_end = e.touches[0].screenX;
+				swipe.y_end = e.touches[0].screenY;
+			}
 		}
 	}
 
 	function touch_end() {
 		//swipe action end
 		//if valid direction trigger notify caller
-		swipe.start = false;
-		let direction = swipe.get_swipe();
-		if (direction != 'INVALID' && !is_game_over) dispatch('move', direction);
+		if ($is_mobile && !$is_game_over) {
+			swipe.start = false;
+			let direction = swipe.get_swipe();
+			if (direction != 'INVALID') dispatch('move', direction);
+		}
 	}
 </script>
 

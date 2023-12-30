@@ -13,3 +13,6 @@ export const is_mobile = readable(false, (set) => {
 
 //game status
 export const is_game_over = writable(true);
+
+//current game score
+export let score = writable(1);

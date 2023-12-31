@@ -1,8 +1,33 @@
 <script>
 	import { score, best_score, is_game_over } from '../js/store';
+    import { fly, fade } from 'svelte/transition';
+
+    const ANIMATION_LEN = 500;
+    let current_score = 0;
+    let delta_score = 0;
+
+    let animate_score = false;
+
+    function score_animation(timeout) {
+        //start animation and stop it after a timeout
+        //then update score and best score
+        animate_score = true;
+        setTimeout(() => {
+                animate_score = false;
+                current_score += delta_score;
+                if (current_score > $best_score) $best_score = current_score;
+            }
+            , timeout
+        );
+    }
 
 	//update best score if needed
-	$: if ($score > $best_score) $best_score = $score;
+    score.subscribe((v) => {
+        // this is a trick as gained points might be the same on different moves
+        // this way we can recognize changes in score for every move
+        delta_score = v - current_score;
+        if(delta_score > 0) score_animation(ANIMATION_LEN); 
+    });
 
 	function new_game() {
 		$score = 0;
@@ -11,10 +36,20 @@
 </script>
 
 <div class="controller">
+    <!-- animation score -->
+    {#if animate_score}
+        <div class="delta-score text"  
+            in:fly={{ delay:0, duration: ANIMATION_LEN, x: 0, y: 80 }}
+        >
+                +{delta_score}
+        </div>
+    {:else}
+        <div class="delta-score text hidden">+{delta_score}</div>
+    {/if}
 	<div class="title text">2048</div>
 	<div class="cell-score score text">
 		<span class="cell-score-title">SCORE</span>
-		<span class="cell-score-value">{$score}</span>
+		<span class="cell-score-value">{current_score}</span>
 	</div>
 	<div class="cell-score best text">
 		<span class="cell-score-title">BEST</span>
@@ -34,7 +69,7 @@
 	}
 
 	.cell-score {
-		display: flex;
+  		display: flex;
 		flex-direction: column;
 		border-radius: 3px;
 		background-color: var(--cell-bg);
@@ -91,6 +126,18 @@
 		cursor: pointer;
 	}
 
+    .delta-score {
+        font-size: 28px;
+        font-weight: bolder;
+        position: relative;
+        top: 15px;
+        grid-column: 5/6;
+    }
+
+    .hidden {
+        visibility: hidden;
+    }
+
 	@media only screen and (max-width: 600px) {
 		.cell-score-title {
 			font-size: 12px;
@@ -108,5 +155,13 @@
 			line-height: 40px;
 			font-size: 16px;
 		}
+
+        .delta-score {
+            font-size: 22px;
+            font-weight: bolder;
+            position: relative;
+            top: 25px;
+            grid-column: 5/6;
+        }
 	}
 </style>

@@ -15,11 +15,11 @@
 <style>
 	:global(:root) {
 		--bg-color: #fafaef;
-		--cell-color: rgba(238, 228, 218, 0.35);
 		--main-text-color: #776e65;
 		--button-bg: #8f7a66;
 		--button-fg: #f9f6f2;
 		--cell-bg: #bbada0;
+		--n-color: rgba(238, 228, 218, 0.35);
 		--n2-color: white;
 		--n4-color: beige;
 		--n8-color: yellow;

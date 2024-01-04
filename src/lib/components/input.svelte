@@ -1,10 +1,10 @@
 <script>
-	import { is_mobile, is_game_over } from '../js/store';
+	import { is_mobile } from '../js/store';
 	import { createEventDispatcher } from 'svelte';
 
-	const THRESHOLD = 15; //define swipe sensitivity
+	const THRESHOLD = 25; //define swipe sensitivity
 	const dispatch = createEventDispatcher();
-
+let d = 'NONE';
 	//swipe object used to calculate the direction of swipe
 	let swipe = {
 		start: false,
@@ -34,8 +34,9 @@
 	};
 
 	function key_pressed(k) {
-		if (!$is_mobile && !$is_game_over) {
+		if (!$is_mobile) {
 			//if on desktop dispatch arrow key press as swipe
+            d=k.key.substring(5).toUpperCase();
 			if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(k.key))
 				dispatch('move', k.key.substring(5).toUpperCase());
 		}
@@ -43,7 +44,7 @@
 
 	function touch_start(e) {
 		//start tracking the swipe action
-		if ($is_mobile && !$is_game_over) {
+		if ($is_mobile) {
 			swipe.start = true;
 			swipe.x_start = e.touches[0].screenX;
 			swipe.y_start = e.touches[0].screenY;
@@ -53,7 +54,7 @@
 	function touch_move(e) {
 		//swipe action in progress
 		//we do care just about last point
-		if ($is_mobile && !$is_game_over) {
+		if ($is_mobile) {
 			if (swipe.start) {
 				swipe.x_end = e.touches[0].screenX;
 				swipe.y_end = e.touches[0].screenY;
@@ -64,9 +65,10 @@
 	function touch_end() {
 		//swipe action end
 		//if valid direction trigger notify caller
-		if ($is_mobile && !$is_game_over) {
+		if ($is_mobile) {
 			swipe.start = false;
 			let direction = swipe.get_swipe();
+            d=direction;
 			if (direction != 'INVALID') dispatch('move', direction);
 		}
 	}
@@ -78,3 +80,6 @@
 	on:touchmove={touch_move}
 	on:touchend={touch_end}
 />
+
+{d}
+mobile: {$is_mobile}

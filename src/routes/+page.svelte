@@ -19,18 +19,6 @@
 		--button-bg: #8f7a66;
 		--button-fg: #f9f6f2;
 		--cell-bg: #bbada0;
-		--n0-color: rgba(238, 228, 218, 0.35);
-		--n2-color: white;
-		--n4-color: beige;
-		--n8-color: yellow;
-		--n16-color: orange;
-		--n32-color: red;
-		--n64-color: violet;
-		--n128-color: purple;
-		--n256-color: lightblue;
-		--n512-color: blue;
-		--n1024-color: lightgreen;
-		--n2048-color: green;
 	}
 
 	:global(body) {

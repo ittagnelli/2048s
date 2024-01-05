@@ -31,6 +31,8 @@
 
 	function new_game() {
 		$score = 0;
+        delta_score = 0;
+        current_score = 0;
 		$star_game = true;
 	}
 </script>

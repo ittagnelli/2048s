@@ -4,7 +4,7 @@
 
 	const THRESHOLD = 25; //define swipe sensitivity
 	const dispatch = createEventDispatcher();
-let d = 'NONE';
+
 	//swipe object used to calculate the direction of swipe
 	let swipe = {
 		start: false,
@@ -27,7 +27,7 @@ let d = 'NONE';
 				return this.y_end < this.y_start ? 'UP' : 'DOWN';
 
 			if (this._angle >= 0 && this._angle <= THRESHOLD)
-				return this.x_end > this.x_start ? 'RIGHT' : ' LEFT';
+				return this.x_end > this.x_start ? 'RIGHT' : 'LEFT';
 
 			return 'INVALID';
 		}
@@ -36,7 +36,6 @@ let d = 'NONE';
 	function key_pressed(k) {
 		if (!$is_mobile) {
 			//if on desktop dispatch arrow key press as swipe
-            d=k.key.substring(5).toUpperCase();
 			if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(k.key))
 				dispatch('move', k.key.substring(5).toUpperCase());
 		}
@@ -68,7 +67,6 @@ let d = 'NONE';
 		if ($is_mobile) {
 			swipe.start = false;
 			let direction = swipe.get_swipe();
-            d=direction;
 			if (direction != 'INVALID') dispatch('move', direction);
 		}
 	}
@@ -80,6 +78,3 @@ let d = 'NONE';
 	on:touchmove={touch_move}
 	on:touchend={touch_end}
 />
-
-{d}
-mobile: {$is_mobile}

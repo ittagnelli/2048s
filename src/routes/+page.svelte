@@ -1,7 +1,11 @@
 <script>
 	import GameController from '../lib/components/game_controller.svelte';
 	import GameBoard from '../lib/components/game_board.svelte';
-</script>
+    import Landscape from '../lib/components/landscape.svelte';
+  </script>
+
+<!-- the game can be only played in portrait mode -->
+<Landscape />
 
 <div class="game-container">
 	<div class="game-controller">
@@ -11,6 +15,7 @@
 		<GameBoard />
 	</div>
 </div>
+
 
 <style>
 	:global(:root) {
@@ -32,4 +37,10 @@
 		height: min-content;
 		margin-top: 20px;
 	}
+    
+    @media screen and (min-width: 320px) and (max-width: 767px) and (orientation: landscape) {
+        .game-container {
+            display: none;
+        }
+    }
 </style>

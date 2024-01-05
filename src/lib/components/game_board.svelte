@@ -1,12 +1,12 @@
 <script>
 	import Input from './input.svelte';
-	import { star_game } from '../js/store';
+	import { star_game, score } from '../js/store';
 
 	const EMPTY = 0;
 	const NUM_CELLS = 16;
-	const CELL_DELAY = 1;
+	const CELL_DELAY = 200;
 	let matrix = Array(NUM_CELLS).fill(EMPTY);
-    let d = 'NONE'
+    let move_score = 0;
 
 	const get_random = (min, max) => {
 		return Math.floor(Math.random() * (1 + max - min) + min);
@@ -36,7 +36,6 @@
 
 	const motion = (direction) => {
 		/* selector of the type of movement, it deal with the event created by component input */
-        d=direction
 		switch (direction) {
 			case 'LEFT':
 			case 'RIGHT':
@@ -49,6 +48,8 @@
 			default:
 				break;
 		}
+        $score += move_score;
+        move_score = 0;
 		matrix = [...matrix];
 	};
 
@@ -88,7 +89,10 @@
 				let pivot = r.splice(start + 1, 1)[0];
 				if (pivot == r[start] || r[start] == EMPTY || pivot == EMPTY) {
 					if (!merged) {
-						if (r[start] == pivot && pivot != EMPTY) merged = true;
+						if (r[start] == pivot && pivot != EMPTY) {
+                            merged = true;
+                            move_score += (pivot * 2);
+                        }
 						r[start] += pivot;
 						r.push(EMPTY);
 					} else {
@@ -106,29 +110,21 @@
 	star_game.subscribe((v) => {
 		// this is a trick as gained points might be the same on different moves
 		// this way we can recognize changes in score for every move
-		// delta_score = v - current_score;
-		// if(delta_score > 0) score_animation(ANIMATION_LEN);
 		if ($star_game) {
-			console.log('NUOVO GIOCO:', $star_game);
 			matrix = matrix.map((cell) => (cell = EMPTY));
 			matrix[radom_new_cell()] = 2;
 			matrix[radom_new_cell()] = 2;
+            move_score = 0;
 			$star_game = false;
-
-            // matrix = [0,2,4,8,16,32,64,128,256,512,1024,2048,0,0,0,0]
 		}
 	});
 </script>
 
 <div class="griglia">
 	{#each matrix as cell}
-		<!-- <div class="casella" style="background-color: var(--n{cell}-color);">{cell == 0 ? '' : cell}</div> -->
 		<div class="casella tile-{cell}">{cell == 0 ? '' : cell}</div>
 	{/each}
 </div>
-
-<br>
-{d}
 
 <Input on:move={handle_move} />
 
@@ -151,7 +147,7 @@
 		border-radius: 3px;
 		font-weight: bold;
 		font-size: 55px;
-        font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif
+        font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
 	}
 
 	.tile-0 {
@@ -161,7 +157,6 @@
 	.tile-2 {
         color: #796F65;
 		background: #eee4da;
-		/* box-shadow: 0 0 30px 10px rgba(243, 215, 116, 0), inset 0 0 0 1px rgba(255, 255, 255, 0); */
 	}
     @media only screen and (max-width: 600px) {
         .tile-2 {

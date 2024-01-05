@@ -1,5 +1,5 @@
 <script>
-	import { score, best_score, is_game_over } from '../js/store';
+	import { score, best_score, star_game } from '../js/store';
     import { fly, fade } from 'svelte/transition';
 
     const ANIMATION_LEN = 500;
@@ -31,7 +31,9 @@
 
 	function new_game() {
 		$score = 0;
-		$is_game_over = false;
+        delta_score = 0;
+        current_score = 0;
+		$star_game = true;
 	}
 </script>
 

@@ -1,85 +1,86 @@
 <script>
 	import Input from './input.svelte';
-	import { score } from '../js/store';
-	import { empty } from 'svelte/internal';
+	import { star_game, score } from '../js/store';
+
+	const EMPTY = 0;
+	const NUM_CELLS = 16;
+	const CELL_DELAY = 200;
+	let matrix = Array(NUM_CELLS).fill(EMPTY);
+    let move_score = 0;
+
+	const get_random = (min, max) => {
+		return Math.floor(Math.random() * (1 + max - min) + min);
+	};
 
 	const radom_new_cell = () => {
 		let l = [];
-		for (let i = 0; i < 16; i++) list[i] === 0 ? l.push(i) : null;
+		matrix.forEach((cell, i) => {
+			if (cell === EMPTY) l.push(i);
+		});
 		return l[Math.floor(Math.random() * l.length)];
+	};
+
+	const merge_horizontal = (dir, r) => {
+		for (let r = 0; r < 4; r++) {
+			let merged_row = merge(dir == 'LEFT' ? get_row(r) : get_row(r).reverse());
+			update_row(r, dir == 'LEFT' ? merged_row : merged_row.reverse());
+		}
+	};
+
+	const merge_vertical = (dir, r) => {
+		for (let r = 0; r < 4; r++) {
+			let merged_col = merge(dir == 'UP' ? get_col(r) : get_col(r).reverse());
+			update_col(r, dir == 'UP' ? merged_col : merged_col.reverse());
+		}
 	};
 
 	const motion = (direction) => {
 		/* selector of the type of movement, it deal with the event created by component input */
-		for (let r = 0; r < 4; r++) {
-			let merged_row;
-			switch (direction) {
-				case 'LEFT':
-					merged_row = merge(get_row(r), 0);
-					console.log('      FINAL:', merged_row);
-					update_row(r, merged_row);
-					break;
-
-				case 'RIGHT':
-					merged_row = merge(get_row(r).reverse(), 0);
-					console.log('      FINAL:', merged_row);
-					update_row(r, merged_row.reverse());
-					break;
-
-				case 'UP':
-					merged_row = merge(get_col(r), 0);
-					console.log('      FINAL:', merged_row);
-					update_col(r, merged_row);
-					break;
-
-				case 'DOWN':
-					merged_row = merge(get_col(r).reverse(), 0);
-					console.log('      FINAL:', merged_row);
-					update_col(r, merged_row.reverse());
-					break;
-
-				default:
-					break;
-			}
+		switch (direction) {
+			case 'LEFT':
+			case 'RIGHT':
+				merge_horizontal(direction);
+				break;
+			case 'UP':
+			case 'DOWN':
+				merge_vertical(direction);
+				break;
+			default:
+				break;
 		}
-		list = [...list];
+        $score += move_score;
+        move_score = 0;
+		matrix = [...matrix];
+	};
+
+	const get_next_cell = () => {
+		//80% of cell 2 and 20% of cell 4
+		return get_random(1, 100) < 80 ? 2 : 4;
 	};
 
 	function handle_move(e) {
 		/* deal with the event created by input.svelte */
-		console.log(e.detail);
 		motion(e.detail);
-		dir = e.detail;
-		setTimeout(() => (list[radom_new_cell()] = 2), 500);
+		setTimeout(() => (matrix[radom_new_cell()] = get_next_cell()), CELL_DELAY);
 	}
 
 	const get_row = (r) => {
-		return list.slice(r * 4, r * 4 + 4);
+		return matrix.slice(r * 4, r * 4 + 4);
 	};
 
 	const update_row = (r, row) => {
-		list.splice(r * 4, 4, ...row);
-	};
-
-	const update_col = (r, row) => {
-		for (let i = 0; i < 4; i++) console.log(list.splice(r + i * 4, 1, row[i]));
+		matrix.splice(r * 4, 4, ...row);
 	};
 
 	const get_col = (c) => {
-		return list.filter((_, i) => (i - c) % 4 == 0);
+		return matrix.filter((_, i) => (i - c) % 4 == 0);
 	};
 
-	/* const print_matrix = () => {
-		console.log('--------------');
-		console.log(get_row(0));
-		console.log(get_row(1));
-		console.log(get_row(2));
-		console.log(get_row(3));
-		console.log('--------------');
-	}; */
+	const update_col = (r, row) => {
+		for (let i = 0; i < 4; i++) matrix.splice(r + i * 4, 1, row[i]);
+	};
 
 	const merge = (r) => {
-		console.log('     INIZIO:', r);
 		for (let start = 0; start < 3; start++) {
 			let merged = false;
 			let max_shift = 3 - start;
@@ -88,9 +89,11 @@
 				let pivot = r.splice(start + 1, 1)[0];
 				if (pivot == r[start] || r[start] == EMPTY || pivot == EMPTY) {
 					if (!merged) {
-						if (r[start] == pivot && pivot != EMPTY) merged = true;
+						if (r[start] == pivot && pivot != EMPTY) {
+                            merged = true;
+                            move_score += (pivot * 2);
+                        }
 						r[start] += pivot;
-						//if (r[start] == pivot * 2 && r[start] != EMPTY) $score += pivot * 2;
 						r.push(EMPTY);
 					} else {
 						r.splice(start + 1, 0, pivot);
@@ -99,31 +102,31 @@
 					r.splice(start + 1, 0, pivot);
 					break;
 				}
-				console.log(`INTERMEDIO${max_shift}:`, r);
 			}
 		}
 		return r;
 	};
 
-	let list = [];
-	let dir = 'NEUTRAL';
-	const EMPTY = 0;
-
-	/* initialization of the page */
-	for (let i = 0; i < 16; i++) list.push(0);
-	list[radom_new_cell()] = 2;
-	list[radom_new_cell()] = 2;
+	star_game.subscribe((v) => {
+		// this is a trick as gained points might be the same on different moves
+		// this way we can recognize changes in score for every move
+		if ($star_game) {
+			matrix = matrix.map((cell) => (cell = EMPTY));
+			matrix[radom_new_cell()] = 2;
+			matrix[radom_new_cell()] = 2;
+            move_score = 0;
+			$star_game = false;
+		}
+	});
 </script>
 
 <div class="griglia">
-	{#each list as l}
-		<div class="casella" style="background-color: var(--n{l}-color);">{l == 0 ? '' : l}</div>
+	{#each matrix as cell}
+		<div class="casella tile-{cell}">{cell == 0 ? '' : cell}</div>
 	{/each}
 </div>
 
 <Input on:move={handle_move} />
-
-{dir}
 
 <style>
 	.griglia {
@@ -137,7 +140,133 @@
 	}
 
 	.casella {
+        display: flex;
+        align-items: center;
+        justify-content: center;
 		aspect-ratio: 1;
 		border-radius: 3px;
+		font-weight: bold;
+		font-size: 55px;
+        font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
 	}
+
+	.tile-0 {
+		background: #D0C1B4;
+	}
+
+	.tile-2 {
+        color: #796F65;
+		background: #eee4da;
+	}
+    @media only screen and (max-width: 600px) {
+        .tile-2 {
+            font-size: 40px;
+        }
+    }
+
+	.tile-4 {
+        color: #897F72;
+		background: #ede0c8;
+	}
+    @media only screen and (max-width: 600px) {
+        .tile-4 {
+            font-size: 40px;
+        }
+    }
+
+	.tile-8 {
+		color: #f9f6f2;
+		background: #f2b179;
+	}
+    @media only screen and (max-width: 600px) {
+        .tile-8 {
+            font-size: 40px;
+        }
+    }
+
+	.tile-16 {
+		color: #f9f6f2;
+		background: #f59563;
+	}
+    @media only screen and (max-width: 600px) {
+        .tile-16 {
+            font-size: 35px;
+        }
+    }
+
+	.tile-32 {
+		color: #f9f6f2;
+		background: #f67c5f;
+	}
+    @media only screen and (max-width: 600px) {
+        .tile-32 {
+            font-size: 35px;
+        }
+    }
+
+	.tile-64 {
+		color: #f9f6f2;
+		background: #f65e3b;
+	}
+    @media only screen and (max-width: 600px) {
+        .tile-64 {
+            font-size: 35px;
+        }
+    }
+
+	.tile-128 {
+		color: #f9f6f2;
+		background: #edcf72;
+		font-size: 45px;
+	}
+	@media only screen and (max-width: 600px) {
+        .tile-128 {
+            font-size: 30px;
+        }
+    }
+
+	.tile-256 {
+		color: #f9f6f2;
+		background: #edcc61;
+		font-size: 45px;
+	}
+	@media only screen and (max-width: 600px) {
+        .tile-256 {
+            font-size: 30px;
+        }
+    }
+
+	.tile-512 {
+		color: #f9f6f2;
+		background: #edc850;
+
+		font-size: 45px;
+	}
+	@media only screen and (max-width: 600px) {
+        .tile-512 {
+            font-size: 30px;
+        }
+    }
+
+	.tile-1024 {
+		color: #f9f6f2;
+		background: #edc53f;
+		font-size: 40px;
+	}
+	@media only screen and (max-width: 600px) {
+        .tile-1024 {
+            font-size: 25px;
+        }
+    }
+
+	.tile-2048 {
+		color: #f9f6f2;
+		background: #edc22e;
+		font-size: 40px;
+	}
+	@media only screen and (max-width: 600px) {
+        .tile-2048 {
+            font-size: 25px;
+        }
+    }
 </style>

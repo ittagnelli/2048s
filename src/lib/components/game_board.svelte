@@ -6,7 +6,7 @@
 	const NUM_CELLS = 16;
 	const CELL_DELAY = 200;
 	let matrix = Array(NUM_CELLS).fill(EMPTY);
-    let move_score = 0;
+	let move_score = 0;
 
 	const get_random = (min, max) => {
 		return Math.floor(Math.random() * (1 + max - min) + min);
@@ -34,6 +34,27 @@
 		}
 	};
 
+		const game_over = (r) => {
+			//righe
+			for (let r = 0; r < 4; r++) {
+				for (let i = 0; i < 3; i++) {
+		
+					if (matrix[r * 4 + i] === matrix[r * 4 + i + 1]) {
+						return false; 
+					}}}
+
+			// colonne
+			for (let s = 0; s < 4; s++) {
+				for (let i = 0; i < 3; i++) {
+					if (matrix[i * 4 + s] === matrix[(i + 1) * 4 + s]) {
+						return false;
+					}}}
+
+			matrix.filter((e) => e == EMPTY);
+			console.log("hai perso");
+	
+		};
+
 	const motion = (direction) => {
 		/* selector of the type of movement, it deal with the event created by component input */
 		switch (direction) {
@@ -48,8 +69,8 @@
 			default:
 				break;
 		}
-        $score += move_score;
-        move_score = 0;
+		$score += move_score;
+		move_score = 0;
 		matrix = [...matrix];
 	};
 
@@ -61,6 +82,7 @@
 	function handle_move(e) {
 		/* deal with the event created by input.svelte */
 		motion(e.detail);
+		game_over();
 		setTimeout(() => (matrix[radom_new_cell()] = get_next_cell()), CELL_DELAY);
 	}
 
@@ -72,8 +94,8 @@
 		matrix.splice(r * 4, 4, ...row);
 	};
 
-	const get_col = (c) => {
-		return matrix.filter((_, i) => (i - c) % 4 == 0);
+	const get_col = (s) => {
+		return matrix.filter((_, i) => (i - s) % 4 == 0);
 	};
 
 	const update_col = (r, row) => {
@@ -90,9 +112,9 @@
 				if (pivot == r[start] || r[start] == EMPTY || pivot == EMPTY) {
 					if (!merged) {
 						if (r[start] == pivot && pivot != EMPTY) {
-                            merged = true;
-                            move_score += (pivot * 2);
-                        }
+							merged = true;
+							move_score += pivot * 2;
+						}
 						r[start] += pivot;
 						r.push(EMPTY);
 					} else {
@@ -114,7 +136,7 @@
 			matrix = matrix.map((cell) => (cell = EMPTY));
 			matrix[radom_new_cell()] = 2;
 			matrix[radom_new_cell()] = 2;
-            move_score = 0;
+			move_score = 0;
 			$star_game = false;
 		}
 	});
@@ -140,79 +162,79 @@
 	}
 
 	.casella {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		aspect-ratio: 1;
 		border-radius: 3px;
 		font-weight: bold;
 		font-size: 55px;
-        font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+		font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
 	}
 
 	.tile-0 {
-		background: #D0C1B4;
+		background: #d0c1b4;
 	}
 
 	.tile-2 {
-        color: #796F65;
+		color: #796f65;
 		background: #eee4da;
 	}
-    @media only screen and (max-width: 600px) {
-        .tile-2 {
-            font-size: 40px;
-        }
-    }
+	@media only screen and (max-width: 600px) {
+		.tile-2 {
+			font-size: 40px;
+		}
+	}
 
 	.tile-4 {
-        color: #897F72;
+		color: #897f72;
 		background: #ede0c8;
 	}
-    @media only screen and (max-width: 600px) {
-        .tile-4 {
-            font-size: 40px;
-        }
-    }
+	@media only screen and (max-width: 600px) {
+		.tile-4 {
+			font-size: 40px;
+		}
+	}
 
 	.tile-8 {
 		color: #f9f6f2;
 		background: #f2b179;
 	}
-    @media only screen and (max-width: 600px) {
-        .tile-8 {
-            font-size: 40px;
-        }
-    }
+	@media only screen and (max-width: 600px) {
+		.tile-8 {
+			font-size: 40px;
+		}
+	}
 
 	.tile-16 {
 		color: #f9f6f2;
 		background: #f59563;
 	}
-    @media only screen and (max-width: 600px) {
-        .tile-16 {
-            font-size: 35px;
-        }
-    }
+	@media only screen and (max-width: 600px) {
+		.tile-16 {
+			font-size: 35px;
+		}
+	}
 
 	.tile-32 {
 		color: #f9f6f2;
 		background: #f67c5f;
 	}
-    @media only screen and (max-width: 600px) {
-        .tile-32 {
-            font-size: 35px;
-        }
-    }
+	@media only screen and (max-width: 600px) {
+		.tile-32 {
+			font-size: 35px;
+		}
+	}
 
 	.tile-64 {
 		color: #f9f6f2;
 		background: #f65e3b;
 	}
-    @media only screen and (max-width: 600px) {
-        .tile-64 {
-            font-size: 35px;
-        }
-    }
+	@media only screen and (max-width: 600px) {
+		.tile-64 {
+			font-size: 35px;
+		}
+	}
 
 	.tile-128 {
 		color: #f9f6f2;
@@ -220,10 +242,10 @@
 		font-size: 45px;
 	}
 	@media only screen and (max-width: 600px) {
-        .tile-128 {
-            font-size: 30px;
-        }
-    }
+		.tile-128 {
+			font-size: 30px;
+		}
+	}
 
 	.tile-256 {
 		color: #f9f6f2;
@@ -231,10 +253,10 @@
 		font-size: 45px;
 	}
 	@media only screen and (max-width: 600px) {
-        .tile-256 {
-            font-size: 30px;
-        }
-    }
+		.tile-256 {
+			font-size: 30px;
+		}
+	}
 
 	.tile-512 {
 		color: #f9f6f2;
@@ -243,10 +265,10 @@
 		font-size: 45px;
 	}
 	@media only screen and (max-width: 600px) {
-        .tile-512 {
-            font-size: 30px;
-        }
-    }
+		.tile-512 {
+			font-size: 30px;
+		}
+	}
 
 	.tile-1024 {
 		color: #f9f6f2;
@@ -254,10 +276,10 @@
 		font-size: 40px;
 	}
 	@media only screen and (max-width: 600px) {
-        .tile-1024 {
-            font-size: 25px;
-        }
-    }
+		.tile-1024 {
+			font-size: 25px;
+		}
+	}
 
 	.tile-2048 {
 		color: #f9f6f2;
@@ -265,8 +287,8 @@
 		font-size: 40px;
 	}
 	@media only screen and (max-width: 600px) {
-        .tile-2048 {
-            font-size: 25px;
-        }
-    }
+		.tile-2048 {
+			font-size: 25px;
+		}
+	}
 </style>

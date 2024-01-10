@@ -1,13 +1,13 @@
 <script>
 	import Input from './input.svelte';
 	import { star_game, score } from '../js/store';
-
+	
 	const EMPTY = 0;
 	const NUM_CELLS = 16;
 	const CELL_DELAY = 200;
 	let matrix = Array(NUM_CELLS).fill(EMPTY);
 	let move_score = 0;
-
+	let is_game_over = false;
 	const get_random = (min, max) => {
 		return Math.floor(Math.random() * (1 + max - min) + min);
 	};
@@ -34,26 +34,25 @@
 		}
 	};
 
-		const game_over = (r) => {
-			//righe
-			for (let r = 0; r < 4; r++) {
-				for (let i = 0; i < 3; i++) {
-		
-					if (matrix[r * 4 + i] === matrix[r * 4 + i + 1]) {
-						return false; 
-					}}}
+	const check_equals_number = (r) => {
+		/* iterate [all - 1] elements of list and check the presence of 2 equal neighboring elements */
+		let ris = r.filter((_, i) => {
+			if (i < 4) return r[i] == r[i + 1];
+		});
+		return ris.length == 0;
+	};
 
-			// colonne
-			for (let s = 0; s < 4; s++) {
-				for (let i = 0; i < 3; i++) {
-					if (matrix[i * 4 + s] === matrix[(i + 1) * 4 + s]) {
-						return false;
-					}}}
+	const game_over = () => {
+		/* check the presence of an EMPTY cell */
+		if (matrix.filter((e) => e == EMPTY).length > 0) return;
 
-			matrix.filter((e) => e == EMPTY);
-			console.log("hai perso");
-	
-		};
+		/* check possible mergeable cell, if it founds it exit from the function */
+		for (let r = 0; r < 4; r++) if (!check_equals_number(get_row(r))) return false;
+		for (let c = 0; c < 4; c++) if (!check_equals_number(get_col(c))) return false;
+
+        is_game_over = true;
+		return true;
+	};
 
 	const motion = (direction) => {
 		/* selector of the type of movement, it deal with the event created by component input */
@@ -81,9 +80,11 @@
 
 	function handle_move(e) {
 		/* deal with the event created by input.svelte */
-		motion(e.detail);
-		game_over();
-		setTimeout(() => (matrix[radom_new_cell()] = get_next_cell()), CELL_DELAY);
+		/* block the game when you lose */
+		if (!game_over()) {
+		    motion(e.detail);
+		    setTimeout(() => (matrix[radom_new_cell()] = get_next_cell()), CELL_DELAY);
+        }
 	}
 
 	const get_row = (r) => {
@@ -138,19 +139,50 @@
 			matrix[radom_new_cell()] = 2;
 			move_score = 0;
 			$star_game = false;
+            is_game_over = false;
 		}
 	});
 </script>
 
-<div class="griglia">
+<div class="griglia {is_game_over ? 'background_gameover' : null}">
 	{#each matrix as cell}
 		<div class="casella tile-{cell}">{cell == 0 ? '' : cell}</div>
 	{/each}
 </div>
 
+{#if is_game_over}
+	<h1 class="titolo_gameover">Game over!!!</h1>
+{/if}
+
 <Input on:move={handle_move} />
 
 <style>
+	.titolo_gameover {
+		font-size: 60px;
+		margin-top: -315px;
+		color:#796f65;
+		font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+        opacity: 99%;
+	}
+    @media only screen and (max-width: 600px) {
+		.titolo_gameover {
+			font-size: 50px;
+            margin-top: -225px;
+		}
+	}
+
+	.background_gameover {
+		animation: fadeIn 1.24s;
+		opacity: 30%;
+	}
+	@keyframes fadeIn {
+		0% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0.3;
+		}
+	}
 	.griglia {
 		display: grid;
 		grid-template-columns: repeat(4, minmax(0, 1fr));

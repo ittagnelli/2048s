@@ -2,7 +2,7 @@
 	import GameController from '../lib/components/game_controller.svelte';
 	import GameBoard from '../lib/components/game_board.svelte';
     import Landscape from '../lib/components/landscape.svelte';
-	import GameOver from '../lib/components/game_over.svelte';
+
   </script>
 
 <!-- the game can be only played in portrait mode -->
